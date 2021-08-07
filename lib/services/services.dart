@@ -8,4 +8,4 @@ part 'user_Services.dart';
 part 'food_services.dart';
 part 'transaction_services.dart';
 
-String baseURL = 'http://ikhwanulmuslimin.com/laravel_foodMarket/public/api/';
+String baseURL = 'http://foodmarket-backend.buildwithangga.id/api/';

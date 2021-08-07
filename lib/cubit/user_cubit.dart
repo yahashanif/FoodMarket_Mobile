@@ -37,9 +37,8 @@ class UserCubit extends Cubit<UserState> {
 
     if (result.value != null) {
       emit(UserLoaded((state as UserLoaded).user.copyWith(
-          picturePath:
-              "http://ikhwanulmuslimin.com/laravel_foodMarket/storage/" +
-                  result.value.toString())));
+          picturePath: "http://foodmarket-backend.buildwithangga.id/storage/" +
+              result.value.toString())));
     }
   }
 }

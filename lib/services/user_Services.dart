@@ -1,18 +1,36 @@
 part of 'services.dart';
 
 class UserServices {
-  static Future<ApiReturnValue<User>> signIn(
-      String email, String password) async {
-    await Future.delayed(Duration(microseconds: 500));
-    return ApiReturnValue(value: mockUser);
+  static Future<ApiReturnValue<User>> signIn(String email, String password,
+      {http.Client? client}) async {
+    if (client == null) {
+      client = http.Client();
+    }
+
+    String url = baseURL + 'login';
+    var response = await client.post(Uri.parse(url),
+        headers: {'content-Type': 'application/json'},
+        body:
+            jsonEncode(<String, String>{'email': email, 'password': password}));
+
+    if (response.statusCode != 200) {
+      return ApiReturnValue(message: "Wrong Email Or Password");
+    }
+
+    var data = jsonDecode(response.body);
+    User.token = data['data']['access_token'];
+    User value = User.fromJson(data['data']['user']);
+
+    // await Future.delayed(Duration(microseconds: 500));
+    return ApiReturnValue(value: value);
     // return ApiReturnValue(message: "Wrong Email or Password");
   }
 
   static Future<ApiReturnValue<User>> signUp(User user, String password,
       {File? pictureFile, http.Client? client}) async {
-    if (client! == null) {
+    if (client == null) {
       client = http.Client();
-    } else {}
+    }
 
     String url = baseURL + 'register';
 
@@ -36,14 +54,14 @@ class UserServices {
     var data = jsonDecode(response.body);
 
     User.token = data['data']['access_token'];
-    User value = data['data']['user'];
+    User value = User.fromJson(data['data']['user']);
 
     if (pictureFile != null) {
       ApiReturnValue<String> result = await uploadProfilePicture(pictureFile);
       if (result.value != null) {
         value = value.copyWith(
             picturePath:
-                "http://ikhwanulmuslimin.com/laravel_foodMarket/storage/" +
+                "http://foodmarket-backend.buildwithangga.id/storage/" +
                     result.value.toString());
       }
     }

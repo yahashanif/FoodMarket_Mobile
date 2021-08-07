@@ -7,6 +7,16 @@ class FoodPage extends StatefulWidget {
 
 class _FoodPageState extends State<FoodPage> {
   int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    print((context.bloc<UserCubit>().state as UserLoaded)
+        .user
+        .picturePath
+        .toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     double listItemWidth = MediaQuery.of(context).size.width - 2 * defaulMargin;
