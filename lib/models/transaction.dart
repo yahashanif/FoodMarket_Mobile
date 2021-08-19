@@ -10,6 +10,7 @@ class Transaction extends Equatable {
   final DateTime? dateTime;
   final TransactionStatus? status;
   final User? user;
+  final String? paymentUrl;
 
   Transaction(
       {this.id,
@@ -18,7 +19,25 @@ class Transaction extends Equatable {
       this.total,
       this.dateTime,
       this.status,
-      this.user});
+      this.user,
+      this.paymentUrl});
+
+  factory Transaction.fromJSon(Map<String, dynamic> data) => Transaction(
+        id: data['id'],
+        food: Food.fromJson(data['food']),
+        quantity: int.parse(data['quantity']),
+        total: int.parse(data['total']),
+        dateTime: DateTime.fromMillisecondsSinceEpoch(data['created_at']),
+        status: (data['status'] == 'PENDING')
+            ? TransactionStatus.pending
+            : (data['status'] == 'DELIVERED')
+                ? TransactionStatus.delivered
+                : (data['status'] == 'CANCELLED')
+                    ? TransactionStatus.cancelled
+                    : TransactionStatus.on_delivery,
+        user: User.fromJson(data['user']),
+        paymentUrl: data['payment_url'],
+      );
 
   Transaction copyWith(
       {int? id,

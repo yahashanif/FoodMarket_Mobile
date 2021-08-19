@@ -47,18 +47,29 @@ class _FoodPageState extends State<FoodPage> {
                       )
                     ],
                   ),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                (context.bloc<UserCubit>().state as UserLoaded)
-                                    .user
-                                    .picturePath
-                                    .toString()),
-                            fit: BoxFit.cover)),
+                  GestureDetector(
+                    onTap: () async {
+                      // var result = await context.bloc<UserCubit>().logOut();
+                      // setState(() {});
+
+                      Get.offAll(SignInPage());
+                      await context.bloc<UserCubit>().logout();
+
+                      // print();
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                              image: NetworkImage(URLPhoto +
+                                  (context.bloc<UserCubit>().state
+                                          as UserLoaded)
+                                      .user
+                                      .picturePath!),
+                              fit: BoxFit.cover)),
+                    ),
                   )
                 ],
               ),
@@ -92,6 +103,7 @@ class _FoodPageState extends State<FoodPage> {
                                                 Get.back();
                                               },
                                             ));
+                                            print(e);
                                           },
                                           child: FoodCard(e)),
                                     ))

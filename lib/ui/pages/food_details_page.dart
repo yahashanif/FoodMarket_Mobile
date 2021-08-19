@@ -187,6 +187,7 @@ class _FoodDetailsPageState extends State<FoodDetailsPage> {
                                           total: (quantity *
                                               widget.transaction!.food!
                                                   .price!))));
+                                  print(widget.transaction!.food!.id);
                                 },
                                 color: mainColor,
                                 elevation: 0,

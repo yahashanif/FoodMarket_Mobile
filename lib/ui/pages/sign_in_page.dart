@@ -82,10 +82,14 @@ class _SignInPageState extends State<SignInPage> {
                       await context.bloc<UserCubit>().signIn(
                           emailController.text, passwordController.text);
                       UserState state = context.bloc<UserCubit>().state;
+                      print(state);
+
+                      print(User.token);
 
                       if (state is UserLoaded) {
                         context.bloc<FoodCubit>().getFoods();
                         context.bloc<TransactionCubit>().getTransactions();
+
                         Get.to(MainPage());
                       } else {
                         Get.snackbar("", "",

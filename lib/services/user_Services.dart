@@ -61,8 +61,8 @@ class UserServices {
       if (result.value != null) {
         value = value.copyWith(
             picturePath:
-                "http://foodmarket-backend.buildwithangga.id/storage/" +
-                    result.value.toString());
+                "http://ikhwanulmuslimin.com/laravel_foodMarket/storage/app/public/" +
+                    result.value!);
       }
     }
 
@@ -94,5 +94,23 @@ class UserServices {
     } else {
       return ApiReturnValue(message: 'Uploading Profile Picture Failed');
     }
+  }
+
+  static Future<ApiReturnValue<bool>> logOut({http.Client? client}) async {
+    client ??= http.Client();
+    String url = baseURL + 'logout';
+
+    var response = await client.get(Uri.parse(url), headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${User.token}"
+    });
+
+    if (response.statusCode != 200) {
+      return ApiReturnValue(message: 'Please Try Again');
+    }
+
+    var data = jsonDecode(response.body);
+
+    return ApiReturnValue(value: true);
   }
 }

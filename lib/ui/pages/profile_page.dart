@@ -45,9 +45,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                               image: NetworkImage(
-                                (context.bloc<UserCubit>().state as UserLoaded)
-                                    .user
-                                    .picturePath!,
+                                URLPhoto +
+                                    (context.bloc<UserCubit>().state
+                                            as UserLoaded)
+                                        .user
+                                        .picturePath!,
                               ),
                               fit: BoxFit.cover)),
                     ),

@@ -16,7 +16,11 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             title: "Ouch! Hungry",
             subtitle: "Seems like you have not\nordered any food yet",
             picturePath: "assets/love_burger.png",
-            buttonTap1: () {},
+            buttonTap1: () {
+              Get.offAll(MainPage(
+                initialPage: 0,
+              ));
+            },
             buttonTitle1: "Find Foods",
           );
         } else {
@@ -52,53 +56,73 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           //     )
           //   ],
           // );
-          return GeneralPage(
-            title: "Your Orders",
-            subtitle: "Wait for the best meal",
-            child: Container(
-              width: double.infinity,
-              color: Colors.white,
-              child: Column(
-                children: [
-                  CustomTabBar(
-                    titles: ['In Progress', 'Pass Orders'],
-                    selectedIndex: selectedIndex,
-                    onTap: (index) {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Builder(builder: (_) {
-                    List<Transaction> transaction = (selectedIndex == 0)
-                        ? state.transaction
-                            .where((element) =>
-                                element.status ==
-                                    TransactionStatus.on_delivery ||
-                                element.status == TransactionStatus.pending)
-                            .toList()
-                        : state.transaction
-                            .where((element) =>
-                                element.status == TransactionStatus.delivered ||
-                                element.status == TransactionStatus.cancelled)
-                            .toList();
-                    return Column(
-                      children: transaction
-                          .map((e) => Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    defaulMargin, 0, defaulMargin, 16),
-                                child: OrderListItem(
-                                  e,
-                                  itemWidth: listItemWidth,
-                                ),
-                              ))
-                          .toList(),
-                    );
-                  })
-                ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              // User user;
+              print(User.token);
+              print(TransactionServices.getTransactions());
+              await context.bloc<TransactionCubit>().getTransactions();
+            },
+            child: GeneralPage(
+              title: "Your Orders",
+              subtitle: "Wait for the best meal",
+              child: Container(
+                width: double.infinity,
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    CustomTabBar(
+                      titles: ['In Progress', 'Pass Orders'],
+                      selectedIndex: selectedIndex,
+                      onTap: (index) {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Builder(builder: (_) {
+                      List<Transaction> transaction = (selectedIndex == 0)
+                          ? state.transaction
+                              .where((element) =>
+                                  element.status ==
+                                      TransactionStatus.on_delivery ||
+                                  element.status == TransactionStatus.pending)
+                              .toList()
+                          : state.transaction
+                              .where((element) =>
+                                  element.status ==
+                                      TransactionStatus.delivered ||
+                                  element.status == TransactionStatus.cancelled)
+                              .toList();
+                      return Column(
+                        children: transaction
+                            .map((e) => Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                      defaulMargin, 0, defaulMargin, 16),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      if (e.status ==
+                                          TransactionStatus.pending) {
+                                        await launch(e.paymentUrl!);
+                                      }
+                                    },
+                                    child: OrderListItem(
+                                      e,
+                                      itemWidth: listItemWidth,
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      );
+                    }),
+                    SizedBox(
+                      height: 60,
+                    )
+                  ],
+                ),
               ),
             ),
           );
